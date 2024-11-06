@@ -27,7 +27,7 @@ public class Cam_Controller : MonoBehaviour
         rotY -= mouseX;
         //rotY = Mathf.Clamp(rotY, -110f, 110f);
         
-        playerTransform.localRotation = Quaternion.Euler(0,rotY,0);
+        playerTransform.localRotation = Quaternion.Euler(0,-rotY,0);
 
         //playerTransform.Rotate(Vector3.up*rotY);
     }
