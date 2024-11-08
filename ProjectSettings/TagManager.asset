@@ -6,6 +6,7 @@ TagManager:
   tags:
   - piso
   - Gatinsky
+  - Hitbox
   layers:
   - Default
   - TransparentFX
