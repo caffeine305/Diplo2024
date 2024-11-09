@@ -9,13 +9,17 @@ public class Char_Controller : MonoBehaviour
     public float vel;
     public bool isWalking;
     public bool isJumping;
+    public Rigidbody body;
+    public float fuerzaSalto;
 
     void Start ()
     {
-        vel = 10.0f;
+        vel = 500.0f;
         transform = this.GetComponent<Transform>();
         animator = this.GetComponentInChildren<Animator>();
+        body = GetComponentInChildren<Rigidbody>();
         isWalking = false;
+        fuerzaSalto = 1f;
     }
 
     void Update()
@@ -48,12 +52,18 @@ public class Char_Controller : MonoBehaviour
 
         Walk(direccion.normalized);
 
-        if(Input.GetKey(KeyCode.Space) )
+        if(Input.GetKeyDown(KeyCode.Space) )
         {
             if(isJumping == false)
             {
                 Jump();
             }
+        }
+
+        if(Input.GetKeyUp(KeyCode.Space) )
+        {
+            isJumping = false;        
+            animator.SetBool("isJumping", false); 
         }
 
         if(Input.GetKeyDown(KeyCode.P) )
@@ -71,13 +81,14 @@ public class Char_Controller : MonoBehaviour
     {
         //Vector3 posActual = transform.position;
 
-        if(dir.magnitude < 0.0001f)
+        if(dir.magnitude < 0.001f)
         {
             animator.SetBool("isWalking", false);
         }
         else
-        {    
-            transform.position += dir * vel * Time.deltaTime;
+        {            
+            Vector3 newPosition = body.position + dir * vel * Time.deltaTime;
+            body.MovePosition(newPosition); // Move using Rigidbody
             animator.SetBool("isWalking", true);
         }
         
@@ -85,29 +96,28 @@ public class Char_Controller : MonoBehaviour
 
     void Jump()
     {
-        //Vector3 arriba = Vector3.up;
-        //ector3 impulso_salto = arriba * fuerzaSalto;
-        //controladorFisicas.velocity = impulso_salto;
-        isJumping = true;
+        Vector3 impulsoSalto = Vector3.up * fuerzaSalto;
+        body.AddForce(impulsoSalto, ForceMode.Impulse); // Add jump force
+        isJumping = true;        
         animator.SetBool("isJumping", true); 
     }
 
     void Attack()
     {
         animator.SetBool("isAttacking", true);
-
     }
 
-    void OnCollisionEnter(Collision otro_Objeto) 
+ void OnCollisionEnter(Collision collision)
+{
+    // Ground detection with feet collider
+    if (collision.gameObject.CompareTag("piso"))
     {
-
-        //si otro_Objeto contiene el tag Superficie
-        if(otro_Objeto.gameObject.CompareTag("piso"))
-        {
-            //Reseteamos la variable
-            isJumping = false;
-            animator.SetBool("isJumping", false); 
-        }
+        isJumping = false;
+        animator.SetBool("isJumping", false);
     }
+}
+
+
+
 
 }

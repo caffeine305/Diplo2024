@@ -4,17 +4,18 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - piso
   - Gatinsky
   - Hitbox
+  - Escenario
+  - piso
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Escenario
   - Water
   - UI
-  - 
+  - Gatinsky
   - 
   - 
   - 
