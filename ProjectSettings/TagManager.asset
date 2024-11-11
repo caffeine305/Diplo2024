@@ -8,6 +8,7 @@ TagManager:
   - Hitbox
   - Escenario
   - piso
+  - PointsManager
   layers:
   - Default
   - TransparentFX

@@ -16,7 +16,7 @@ public class Char_Controller : MonoBehaviour
 
     void Start ()
     {
-        vel = 5.0f;
+        vel = 7.0f;
         transform = this.GetComponent<Transform>();
         characterController = GetComponent<CharacterController>();
         animator = this.GetComponentInChildren<Animator>();
