@@ -11,11 +11,14 @@ public class Char_Controller : MonoBehaviour
     public bool isJumping;
     public Rigidbody body;
     public float fuerzaSalto;
+    CharacterController characterController;
+
 
     void Start ()
     {
-        vel = 500.0f;
+        vel = 5.0f;
         transform = this.GetComponent<Transform>();
+        characterController = GetComponent<CharacterController>();
         animator = this.GetComponentInChildren<Animator>();
         body = GetComponentInChildren<Rigidbody>();
         isWalking = false;
@@ -86,9 +89,11 @@ public class Char_Controller : MonoBehaviour
             animator.SetBool("isWalking", false);
         }
         else
-        {            
-            Vector3 newPosition = body.position + dir * vel * Time.deltaTime;
-            body.MovePosition(newPosition); // Move using Rigidbody
+        {               
+            //Vector3 newPosition = body.position + dir * vel * Time.deltaTime;
+            Vector3 newPosition = dir * vel * Time.deltaTime;
+            //body.MovePosition(newPosition);
+            characterController.Move(newPosition);
             animator.SetBool("isWalking", true);
         }
         
