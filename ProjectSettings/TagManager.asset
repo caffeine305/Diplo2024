@@ -9,6 +9,7 @@ TagManager:
   - Escenario
   - piso
   - PointsManager
+  - Billboard
   layers:
   - Default
   - TransparentFX
