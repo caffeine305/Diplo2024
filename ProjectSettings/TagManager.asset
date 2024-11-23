@@ -10,6 +10,7 @@ TagManager:
   - piso
   - PointsManager
   - Billboard
+  - Enemy
   layers:
   - Default
   - TransparentFX

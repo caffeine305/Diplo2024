@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class Char_Controller : MonoBehaviour
 {
+    public PointsManager damageManager;
     public Transform transform;
     public Animator animator;
+    public GameObject hitbox;
     public float vel;
     public bool isWalking;
     public bool isJumping;
     public Rigidbody body;
     public float fuerzaSalto;
     CharacterController characterController;
+    public int damageCounter;
 
 
     void Start ()
@@ -23,6 +26,15 @@ public class Char_Controller : MonoBehaviour
         body = GetComponentInChildren<Rigidbody>();
         isWalking = false;
         fuerzaSalto = 1f;
+        damageCounter = 1;
+        hitbox =  GameObject.FindGameObjectWithTag("Hitbox");
+        hitbox.SetActive(false);
+
+        GameObject LoadPointsManager = GameObject.FindWithTag("PointsManager");
+        if (LoadPointsManager != null)
+        {
+            damageManager = LoadPointsManager.GetComponent<PointsManager>();
+        }
     }
 
     void Update()
@@ -55,6 +67,11 @@ public class Char_Controller : MonoBehaviour
 
         Walk(direccion.normalized);
 
+        if(hitbox)
+        {
+            hitbox.SetActive(false);
+        }
+
         if(Input.GetKeyDown(KeyCode.Space) )
         {
             if(isJumping == false)
@@ -69,7 +86,7 @@ public class Char_Controller : MonoBehaviour
             animator.SetBool("isJumping", false); 
         }
 
-        if(Input.GetKeyDown(KeyCode.P) )
+        if(Input.GetKeyDown(KeyCode.P))
         {
             Attack();
         }
@@ -79,6 +96,15 @@ public class Char_Controller : MonoBehaviour
         }
 
     }
+    void OnControllerColliderHit(ControllerColliderHit hit)
+{
+    if (hit.collider.CompareTag("Enemy"))
+    {
+        Vector3 pushDirection = hit.normal;
+        pushDirection.y = 0; // No empujes hacia arriba.
+        transform.position += pushDirection * Time.deltaTime * 2f; // Ajusta el valor para evitar overlap.
+    }
+}
 
     void Walk(Vector3 dir)
     {
@@ -110,6 +136,7 @@ public class Char_Controller : MonoBehaviour
     void Attack()
     {
         animator.SetBool("isAttacking", true);
+        hitbox.SetActive(true);
     }
 
  void OnCollisionEnter(Collision collision)
@@ -119,6 +146,13 @@ public class Char_Controller : MonoBehaviour
     {
         isJumping = false;
         animator.SetBool("isJumping", false);
+    }
+}
+void OnCollisionStay(Collision collision)
+{
+    if (collision.gameObject.CompareTag("Enemy"))
+    {
+        damageManager.UpdatePlayerEnergy(damageCounter);
     }
 }
 
