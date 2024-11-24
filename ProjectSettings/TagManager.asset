@@ -11,6 +11,7 @@ TagManager:
   - PointsManager
   - Billboard
   - Enemy
+  - GatinskyBoxCollider
   layers:
   - Default
   - TransparentFX

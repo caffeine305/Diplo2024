@@ -17,7 +17,7 @@ public class Cam_Controller : MonoBehaviour
         playerTransform = transform;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         float mouseX = Input.GetAxis("Mouse X") * velcam;
         float mouseY = Input.GetAxis("Mouse Y") * velcam;

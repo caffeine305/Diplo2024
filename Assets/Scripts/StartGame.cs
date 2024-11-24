@@ -5,6 +5,6 @@ public class StartGame : MonoBehaviour {
 
     public void OnButtonPressed()
     {
-        SceneManager.LoadScene("Stage1");
+        SceneManager.LoadScene("Stage2");
     }
 }

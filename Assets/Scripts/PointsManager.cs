@@ -10,18 +10,20 @@ public class PointsManager : MonoBehaviour
     public int actualBossEnergy;
     public int gamePoints;
 
-    public string gamePointsString;
+    string gamePointsString;
+    string playerEnergyString;
     public bool alive;
 
     //public LifebarManager healthBar;
     public TMP_Text pointsDisplay;
+    public TMP_Text energyDisplay;
     //public GameObject gameOverPanel;
 
     void Start()
     {
         //gameOverPanel.SetActive(false);
         bossMaxEnergy = 200;
-        playerMaxEnergy = 100;
+        playerMaxEnergy = 500;
         gamePoints = 0;
         alive = true;
 
@@ -35,7 +37,7 @@ public class PointsManager : MonoBehaviour
     public void UpdatePoints(int obtainedPoints)
     {
         gamePoints = gamePoints + obtainedPoints; 
-
+        
         gamePointsString = gamePoints.ToString();
         pointsDisplay.text = gamePointsString;
 
@@ -44,9 +46,20 @@ public class PointsManager : MonoBehaviour
 
     public void UpdatePlayerEnergy(int obtainedDamage)
     {
-        this.actualPlayerEnergy = actualPlayerEnergy - obtainedDamage;
+        if(actualPlayerEnergy > 1)
+        {
+            this.actualPlayerEnergy = actualPlayerEnergy - obtainedDamage;
+            int visualEnergy = Mathf.RoundToInt(actualPlayerEnergy/5);
+            playerEnergyString = visualEnergy.ToString();
+            energyDisplay.text = playerEnergyString; 
+
         //healthBar.SetHealth(actualPlayerEnergy);
-        //Debug.Log("Energía: "+actualPlayerEnergy);
+        }
+        else
+        {
+            actualPlayerEnergy = 0;
+        }
+            Debug.Log("Energía: "+actualPlayerEnergy);
         
     }
     public bool DeathManager()

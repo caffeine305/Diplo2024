@@ -9,6 +9,7 @@ public class EnemyAIPhysical : MonoBehaviour
     public GameObject wtf;
     public Animator enemyAnimator;
     public float speed;
+
     void Start()
     {
         atrapaa = false;
@@ -17,39 +18,37 @@ public class EnemyAIPhysical : MonoBehaviour
         wtf = GameObject.FindGameObjectWithTag("Billboard");
         wtf.SetActive(false);
         enemyAnimator = this.GetComponentInChildren<Animator>();
-        enemyAnimator.SetBool("isAttacking", false);
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.enabled = false;
         if (agent != null)
         {
             agent.speed = speed;
         }
-        
-
     }
 
    void OnTriggerStay(Collider other)
    {
-    if(other.tag == "Gatinsky")
+    if(other.tag == "GatinskyBoxCollider")
     {
         atrapaa = true;
+        enemyAnimator.SetBool("isDetecting", true);
         wtf.SetActive(true);
         agent.enabled = true;
 
         if(atrapaa)
         {
-            Debug.Log("¡Atrapá, Gatinsky!");
+            Debug.Log("¡Gatinsky detectada!");
         }
     }
    }
 
    void OnTriggerExit(Collider other)
    {
-    if(other.tag == "Gatinsky")
+    if(other.tag == "GatinskyBoxCollider")
     {
         atrapaa = false;
         wtf.SetActive(false);
-        enemyAnimator.SetBool("isAttacking", false);
+        enemyAnimator.SetBool("isDetecting", false);
         agent.enabled = false;
     }
    }
@@ -63,9 +62,11 @@ public class EnemyAIPhysical : MonoBehaviour
 
     if(otherCol.gameObject.tag == "Gatinsky")
     {
+        Debug.Log("Ataque Activado");
         enemyAnimator.SetBool("isAttacking", true);
     }
-   }
+    }
+
    void OnCollisionExit(Collision otherCol)
    {
     if(otherCol.gameObject.tag == "Gatinsky")
@@ -74,7 +75,7 @@ public class EnemyAIPhysical : MonoBehaviour
     }
    }
 
-   void Update()
+   void FixedUpdate()
    {
     if (atrapaa && player != null)
         {

@@ -19,7 +19,7 @@ public class GetItem : MonoBehaviour
    void OnTriggerEnter(Collider other)
    {
 
-    if(other.tag == "Gatinsky")
+    if(other.tag == "GatinskyBoxCollider")
     {
         pointManager.UpdatePoints(scoreCounter);
         //Instantiate(clickSound,transform.position,transform.rotation);

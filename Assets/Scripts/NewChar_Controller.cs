@@ -2,56 +2,58 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Char_Controller : MonoBehaviour
+public class NewChar_Controller : MonoBehaviour
 {
     public PointsManager damageManager;
-    public Transform transform;
     public Animator animator;
     public GameObject hitbox;
     public float vel;
-    public bool isWalking;
-    public bool isJumping;
+    private bool isWalking;
+    private bool isJumping;
+    private bool isAttacking;
     //public Rigidbody body;
-    public float fuerzaSalto;
     CharacterController characterController;
     public int damageCounter;
 
+    public float jumpForce;
+    private Rigidbody rb;
+    public BoxCollider gatinskyBoxCol;
+    private bool isGrounded;
 
-    void Start ()
+    void Start()
     {
+        rb = GetComponent<Rigidbody>();
+
         vel = 7.0f;
-        transform = this.GetComponent<Transform>();
-        characterController = GetComponent<CharacterController>();
+
         animator = this.GetComponentInChildren<Animator>();
-        //body = GetComponentInChildren<Rigidbody>();
         isWalking = false;
-        fuerzaSalto = 1f;
+        
         damageCounter = 1;
         hitbox = GameObject.FindGameObjectWithTag("Hitbox");
         hitbox.SetActive(false);
-
+        jumpForce = 9f;
         GameObject LoadPointsManager = GameObject.FindWithTag("PointsManager");
         if (LoadPointsManager != null)
         {
             damageManager = LoadPointsManager.GetComponent<PointsManager>();
         }
+
+        GameObject LoadBoxCollider = GameObject.FindWithTag("GatinskyBoxCollider");
+
+        if (LoadBoxCollider != null)
+        {
+            // Add a BoxCollider if not already present
+            gatinskyBoxCol = LoadBoxCollider.GetComponent<BoxCollider>();
+        }
+
+
+
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        ExecuteInputs();
-    }
 
-    /*
-    void LateUpdate()
-    {
-        Rigidbody rigidbody = GetComponentInChildren<Rigidbody>();
-        rigidbody.position = transform.position;
-        rigidbody.rotation = transform.rotation;
-    }*/
-
-    void ExecuteInputs()
-    {
         Vector3 direccion = Vector3.zero;
         //direccion = cuerpo.position;
 
@@ -74,14 +76,19 @@ public class Char_Controller : MonoBehaviour
 
         Walk(direccion.normalized);
 
-        if(hitbox)
+
+    }
+
+    void Update()
+    {
+        if(!isAttacking)
         {
             hitbox.SetActive(false);
         }
 
         if(Input.GetKeyDown(KeyCode.Space) )
         {
-            if(isJumping == false)
+            if(isGrounded == true)
             {
                 Jump();
             }
@@ -92,26 +99,19 @@ public class Char_Controller : MonoBehaviour
             isJumping = false;        
             animator.SetBool("isJumping", false); 
         }
-
         if(Input.GetKeyDown(KeyCode.P))
         {
             Attack();
+            isAttacking = true;
         }
         if(Input.GetKeyUp(KeyCode.P) )
         {
             animator.SetBool("isAttacking", false);
+            isAttacking = false;
         }
 
     }
-    void OnControllerColliderHit(ControllerColliderHit hit)
-{
-    if (hit.collider.CompareTag("Enemy"))
-    {
-        Vector3 pushDirection = hit.normal;
-        pushDirection.y = 0; // No empujes hacia arriba.
-        transform.position += pushDirection * Time.deltaTime * 2f; // Ajusta el valor para evitar overlap.
-    }
-}
+
 
     void Walk(Vector3 dir)
     {
@@ -123,22 +123,21 @@ public class Char_Controller : MonoBehaviour
             animator.SetBool("isWalking", false);
         }
         else
-        {               
-            //Vector3 newPosition = body.position + dir * vel * Time.deltaTime;
-            Vector3 newPosition = dir * vel * Time.deltaTime;
-            //body.MovePosition(newPosition);
-            characterController.Move(newPosition);
+        {                   
+            Vector3 movement = dir * vel;
+            rb.MovePosition(rb.position + movement * Time.fixedDeltaTime);
             animator.SetBool("isWalking", true);
         }
-        
     }
 
     void Jump()
     {
         //Vector3 impulsoSalto = Vector3.up * fuerzaSalto;
         //body.AddForce(impulsoSalto, ForceMode.Impulse); // Add jump force
-        isJumping = true;        
-        animator.SetBool("isJumping", true); 
+        animator.SetBool("isJumping", true);
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        isGrounded = false;        
+         
     }
 
     void Attack()
@@ -152,7 +151,7 @@ public class Char_Controller : MonoBehaviour
     // Ground detection with feet collider
     if (collision.gameObject.CompareTag("piso"))
     {
-        isJumping = false;
+        isGrounded = true;
         animator.SetBool("isJumping", false);
     }
 }
@@ -162,8 +161,9 @@ void OnCollisionStay(Collision collision)
     {
         damageManager.UpdatePlayerEnergy(damageCounter);
     }
-}
 
+
+}
 
 
 
