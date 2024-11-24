@@ -11,7 +11,7 @@ public class Char_Controller : MonoBehaviour
     public float vel;
     public bool isWalking;
     public bool isJumping;
-    public Rigidbody body;
+    //public Rigidbody body;
     public float fuerzaSalto;
     CharacterController characterController;
     public int damageCounter;
@@ -23,11 +23,11 @@ public class Char_Controller : MonoBehaviour
         transform = this.GetComponent<Transform>();
         characterController = GetComponent<CharacterController>();
         animator = this.GetComponentInChildren<Animator>();
-        body = GetComponentInChildren<Rigidbody>();
+        //body = GetComponentInChildren<Rigidbody>();
         isWalking = false;
         fuerzaSalto = 1f;
         damageCounter = 1;
-        hitbox =  GameObject.FindGameObjectWithTag("Hitbox");
+        hitbox = GameObject.FindGameObjectWithTag("Hitbox");
         hitbox.SetActive(false);
 
         GameObject LoadPointsManager = GameObject.FindWithTag("PointsManager");
@@ -42,6 +42,13 @@ public class Char_Controller : MonoBehaviour
         ExecuteInputs();
     }
 
+    /*
+    void LateUpdate()
+    {
+        Rigidbody rigidbody = GetComponentInChildren<Rigidbody>();
+        rigidbody.position = transform.position;
+        rigidbody.rotation = transform.rotation;
+    }*/
 
     void ExecuteInputs()
     {
@@ -128,7 +135,7 @@ public class Char_Controller : MonoBehaviour
     void Jump()
     {
         Vector3 impulsoSalto = Vector3.up * fuerzaSalto;
-        body.AddForce(impulsoSalto, ForceMode.Impulse); // Add jump force
+        //body.AddForce(impulsoSalto, ForceMode.Impulse); // Add jump force
         isJumping = true;        
         animator.SetBool("isJumping", true); 
     }
