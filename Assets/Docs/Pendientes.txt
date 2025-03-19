@@ -1,0 +1,9 @@
+Animaciones de Gatinsky:
+
+Daño
+Correr
+Salto (corregir)
+
+Establecer más enemigos en Stage 2
+
+Generar un Gameplay similar al de los calabozos de Deadly Towers.
