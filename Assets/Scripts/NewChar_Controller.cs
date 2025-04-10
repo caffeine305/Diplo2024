@@ -19,6 +19,8 @@ public class NewChar_Controller : MonoBehaviour
     private Rigidbody rb;
     public BoxCollider gatinskyBoxCol;
     private bool isGrounded;
+    private bool correr;
+    private Vector3 direccion;
 
     void Start()
     {
@@ -47,15 +49,11 @@ public class NewChar_Controller : MonoBehaviour
             gatinskyBoxCol = LoadBoxCollider.GetComponent<BoxCollider>();
         }
 
-
-
     }
 
-    void FixedUpdate()
+    void Update()
     {
-
-        Vector3 direccion = Vector3.zero;
-        //direccion = cuerpo.position;
+        direccion = Vector3.zero;
 
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
@@ -74,13 +72,10 @@ public class NewChar_Controller : MonoBehaviour
             direccion += transform.right;
         }
 
-        Walk(direccion.normalized);
+        correr = Input.GetKey(KeyCode.O);
 
+        Move(direccion.normalized, correr);
 
-    }
-
-    void Update()
-    {
         if(!isAttacking)
         {
             hitbox.SetActive(false);
@@ -99,6 +94,7 @@ public class NewChar_Controller : MonoBehaviour
             isJumping = false;        
             animator.SetBool("isJumping", false); 
         }
+
         if(Input.GetKeyDown(KeyCode.P))
         {
             Attack();
@@ -112,8 +108,7 @@ public class NewChar_Controller : MonoBehaviour
 
     }
 
-
-    void Walk(Vector3 dir)
+    void Move(Vector3 dir, bool correr)
     {
         //Vector3 posActual = transform.position;
         isWalking = true;
@@ -121,12 +116,23 @@ public class NewChar_Controller : MonoBehaviour
         if(dir.magnitude < 0.001f)
         {
             animator.SetBool("isWalking", false);
+            animator.SetBool("isRunning", false);
+            return;
         }
         else
         {                   
+            if(correr)
+            {
+                vel = 12.0f;
+            }else
+            {
+                vel = 7.0f;
+            }
+
             Vector3 movement = dir * vel;
             rb.MovePosition(rb.position + movement * Time.fixedDeltaTime);
-            animator.SetBool("isWalking", true);
+            animator.SetBool("isWalking", !correr);
+            animator.SetBool("isRunning", correr);
         }
     }
 
